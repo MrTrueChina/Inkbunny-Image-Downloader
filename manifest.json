@@ -1,7 +1,7 @@
 {
   "name": "Inkbunny Image Downloader",
   "description": "Inkbunny Image Downloader",
-  "version": "0.1",
+  "version": "1.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -16,17 +16,17 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "/images/get_started16.png",
-      "32": "/images/get_started32.png",
-      "48": "/images/get_started48.png",
-      "128": "/images/get_started128.png"
+      "16": "/images/inkbunny_image_downloader16.png",
+      "32": "/images/inkbunny_image_downloader32.png",
+      "48": "/images/inkbunny_image_downloader48.png",
+      "128": "/images/inkbunny_image_downloader128.png"
     }
   },
   "icons": {
-    "16": "/images/get_started16.png",
-    "32": "/images/get_started32.png",
-    "48": "/images/get_started48.png",
-    "128": "/images/get_started128.png"
+    "16": "/images/inkbunny_image_downloader16.png",
+    "32": "/images/inkbunny_image_downloader32.png",
+    "48": "/images/inkbunny_image_downloader48.png",
+    "128": "/images/inkbunny_image_downloader128.png"
   },
   "options_page": "options.html",
   "content_scripts": [
