@@ -12,10 +12,13 @@ chrome.runtime.onMessage.addListener(
 
 /**
  * 下载图片
- * @param {string} fileName 下载后的文件名，包括后缀名
+ * @param {string} fileName 下载后的文件名，不包括后缀名
  * @param {string} url 下载链接
  */
 function downloadImage(fileName, url) {
+    // 按照 url 给下载文件名补充后缀名
+    fileName += url.substring(url.lastIndexOf("."));
+    // 下载
     chrome.downloads.download({
         filename: fileName,
         url: url

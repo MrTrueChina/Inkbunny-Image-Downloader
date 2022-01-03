@@ -61,8 +61,11 @@ function isSingleImage() {
 /**
  * 下载单张图片
  */
-function downloadSingleImage(){
-    downloadSingleImageByDocument(document,"page.jpg");
+function downloadSingleImage() {
+    // 获取下载后的名称
+    let fileName = getSingleImageName();
+    // 单张下载
+    downloadSingleImageByDocument(document, fileName);
 }
 
 /**
@@ -98,15 +101,16 @@ function downloadMultipleImage(){
         // 获取到这个图的 a 标签
         let pageA = pageDivList[pageIndex].getElementsByTagName("a")[0];
         // 通过标签里的链接下载图片
-        downloadImageByHttpGet(pageA.href);
+        downloadImageByHttpGet(pageIndex, pageA.href);
     }
 }
 
 /**
  * 通过 HTTP GET 请求下载图片
+ * @param {int} pageIndex 这张图片在图集中的索引
  * @param {string} url HTTP GET 请求的链接
  */
-function downloadImageByHttpGet(url){
+function downloadImageByHttpGet(pageIndex, url){
     // 准备发送 HTTP 请求的对象
     let httpRequest = new XMLHttpRequest();
     
@@ -122,8 +126,11 @@ function downloadImageByHttpGet(url){
             // 以 HTML 方式转化为 Document 对象
             let doc = new DOMParser().parseFromString(responseText, "text/html");
 
+            // 获取下载后的文件名
+            let fileName = getMultipleImageName(pageIndex);
+
             // 下载这个网页的主图
-            downloadSingleImageByDocument(doc,"page.jpg");
+             downloadSingleImageByDocument(doc,fileName);
         }
     };
     
@@ -135,7 +142,25 @@ function downloadImageByHttpGet(url){
  * 获取单张图片下载后的名字
  */
 function getSingleImageName(){
+    let name = "[" + getAuthorName() + "] " + getOriginImageName() + "_Inkbunny_" + getImageId();
 
+    // 去除 windows 不能命名的字符
+    name = name.replace(/\\|\/|:|\*|\?|"|<|>|\|/g, "");
+
+    return name;
+}
+
+/**
+ * 获取多P图集中单张图片下载后的名字
+ * @param {int} index 这张图片在多P图集中的索引
+ */
+function getMultipleImageName(index){
+    let name = "[" + getAuthorName() + "] " + getOriginImageName() + "_Inkbunny_" + getImageId() + "_p" + index;
+
+    // 去除 windows 不能命名的字符
+    name = name.replace(/\\|\/|:|\*|\?|"|<|>|\|/g, "");
+
+    return name;
 }
 
 /**
@@ -221,7 +246,7 @@ function getOriginImageName() {
     let imageName = imageNameElement.textContent;
 
     // 去除前后空格
-    authorName = authorName.replace(/(^\s*)|(\s*$)/g, "");
+    imageName = imageName.replace(/(^\s*)|(\s*$)/g, "");
 
     return imageName;
 }
@@ -235,6 +260,11 @@ function getImageId() {
     
     // 移除固定部分
     let id = url.replace("https://inkbunny.net/s/","");
+
+    // 对于多P图，Inkbunny 的网址后缀了分P等信息，需要删掉
+    if (id.indexOf("-") != -1) {
+        id = id.substring(0, id.indexOf("-"));
+    }
 
     return id;
 }
