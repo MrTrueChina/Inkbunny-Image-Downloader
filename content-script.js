@@ -40,12 +40,32 @@ function addDownloadButton() {
  * 下载按钮点击时执行的方法
  */
 function downloadButtonClick() {
+    if (isSingleImage()) {
+        // 当前图片是单图，使用单图方式下载
+        downloadSingleImage();
+    } else {
+        // 否则使用多图方式下载
+        downloadMultipleImage();
+    }
+}
+
+/**
+ * 检测当前图片是否是单图
+ * @returns 如果当前图片是单图则返回 true，是多图则返回 false
+ */
+function isSingleImage() {
+    // 获取 id 为 files_area 的元素，这个是多图列表展示部分的一个元素的 id，获取不到则是单图
+    return !(document.getElementById("files_area"));
+}
+
+/**
+ * 下载单张图片
+ */
+function downloadSingleImage() {
     // 获取到正在浏览的图片的元素
     let imageElement = document.getElementById("magicbox");
     // 向上获取到 同时包含图片和下载按钮的层级的 div
-    let imageAndDownloadDiv = imageElement.parentElement.parentElement
-    // 向上找到 同时包含图片和图片列表的层级的 div
-    let imageAndImageListDiv = imageElement.parentElement.parentElement.parentElement;
+    let imageAndDownloadDiv = imageElement.parentElement.parentElement;
 
     // 获取下载图片的 a 标签
     let aList = imageAndDownloadDiv.getElementsByTagName("a");
@@ -55,4 +75,11 @@ function downloadButtonClick() {
 
     // 向 background 发出下载图片消息，downloads 在注入内容里不能使用，需要向 background 发消息让 background 使用
     chrome.runtime.sendMessage({ type: "downloadImage", fileName: testName, url: downloadA.href });
+}
+
+/**
+ * 下载多张图片
+ */
+function downloadMultipleImage(){
+
 }
