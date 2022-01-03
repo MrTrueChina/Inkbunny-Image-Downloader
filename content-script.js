@@ -41,8 +41,8 @@ function addDownloadButton() {
  */
 function downloadButtonClick() {
     if (isSingleImage()) {
-        // 当前图片是单图，使用单图方式下载
-        downloadSingleImage();
+        // 当前图片是单图，直接下载当前网页上的单图
+        downloadSingleImage(document);
     } else {
         // 否则使用多图方式下载
         downloadMultipleImage();
@@ -60,10 +60,11 @@ function isSingleImage() {
 
 /**
  * 下载单张图片
+ * @param {Document} inkbunnyDoc Inkbunny 主站的图片浏览网页的 Document 对象
  */
-function downloadSingleImage() {
+function downloadSingleImage(inkbunnyDoc) {
     // 获取到正在浏览的图片的元素
-    let imageElement = document.getElementById("magicbox");
+    let imageElement = inkbunnyDoc.getElementById("magicbox");
     // 向上获取到 同时包含图片和下载按钮的层级的 div
     let imageAndDownloadDiv = imageElement.parentElement.parentElement;
 
@@ -81,5 +82,45 @@ function downloadSingleImage() {
  * 下载多张图片
  */
 function downloadMultipleImage(){
+    // 获取 包括所有的分P列表的元素，Inkbunny 的分P是一个大容器里面好多个小列表，小列表存储分P
+    let listContentElement = document.getElementById("files_area").parentElement;
+    // 获取 包括每个图片的div
+    let pageDivList = listContentElement.getElementsByClassName("widget_imageFromSubmission");
 
+    // 遍历每个图
+    for(let pageIndex = 0;pageIndex < pageDivList.length;pageIndex++){
+        // 获取到这个图的 a 标签
+        let pageA = pageDivList[pageIndex].getElementsByTagName("a")[0];
+        // 通过标签里的链接下载图片
+        downloadImageByHttpGet(pageA.href);
+    }
+}
+
+/**
+ * 通过 HTTP GET 请求下载图片
+ * @param {string} url HTTP GET 请求的链接
+ */
+function downloadImageByHttpGet(url){
+    // 准备发送 HTTP 请求的对象
+    let httpRequest = new XMLHttpRequest();
+    
+    // 开始连接，连接 a 标签的链接
+    httpRequest.open('GET', url, true);
+
+    // 设置获取成功后的处理方法
+    httpRequest.onreadystatechange = () => {
+        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+            // 获取请求得到的值
+            let responseText = httpRequest.responseText;
+
+            // 以 HTML 方式转化为 Document 对象
+            let doc = new DOMParser().parseFromString(responseText, "text/html");
+
+            // 下载这个网页的主图
+            downloadSingleImage(doc);
+        }
+    };
+    
+    // 发送请求
+    httpRequest.send();
 }
