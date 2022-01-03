@@ -2,6 +2,15 @@
  * 这个脚本用于给 Inkbunny 网页添加下载按钮
  */
 
+/**
+ * 重命名单张图片的格式化字符串
+ */
+let renameSingleName;
+/**
+ * 重命名多张图片的格式化字符串
+ */
+let renameMultiName;
+
 // 添加按钮
 addDownloadButton();
 
@@ -40,13 +49,26 @@ function addDownloadButton() {
  * 下载按钮点击时执行的方法
  */
 function downloadButtonClick() {
-    if (isSingleImage()) {
-        // 当前图片是单图，直接下载当前网页上的单图
-        downloadSingleImage();
-    } else {
-        // 否则使用多图方式下载
-        downloadMultipleImage();
-    }
+    // 先读取设置再下载
+    chrome.storage.sync.get(
+        {
+            renameSingleName: "[${authorName}] ${imageName}_Inkbunny_${imageId}",
+            renameMultiName: "[${authorName}] ${imageName}_Inkbunny_${imageId}_${page}"
+        },
+        (items) => {
+            // 将读取到的格式化字符串保存到本地
+            renameSingleName = items.renameSingleName;
+            renameMultiName = items.renameMultiName;
+            
+            if (isSingleImage()) {
+                // 当前图片是单图，直接下载当前网页上的单图
+                downloadSingleImage();
+            } else {
+                // 否则使用多图方式下载
+                downloadMultipleImage();
+            }
+        }
+    );
 }
 
 /**
@@ -64,6 +86,7 @@ function isSingleImage() {
 function downloadSingleImage() {
     // 获取下载后的名称
     let fileName = getSingleImageName();
+    
     // 单张下载
     downloadSingleImageByDocument(document, fileName);
 }
@@ -142,7 +165,15 @@ function downloadImageByHttpGet(pageIndex, url){
  * 获取单张图片下载后的名字
  */
 function getSingleImageName(){
-    let name = "[" + getAuthorName() + "] " + getOriginImageName() + "_Inkbunny_" + getImageId();
+    
+    // 以格式化文本为基础
+    let name = renameSingleName;
+
+    // 替换文本
+    name = name.replace(/\$\{authorName\}/g, getAuthorName());
+    name = name.replace(/\$\{authorId\}/g, getAuthorId());
+    name = name.replace(/\$\{imageName\}/g, getOriginImageName());
+    name = name.replace(/\$\{imageId\}/g, getImageId());
 
     // 去除 windows 不能命名的字符
     name = name.replace(/\\|\/|:|\*|\?|"|<|>|\|/g, "");
@@ -155,7 +186,16 @@ function getSingleImageName(){
  * @param {int} index 这张图片在多P图集中的索引
  */
 function getMultipleImageName(index){
-    let name = "[" + getAuthorName() + "] " + getOriginImageName() + "_Inkbunny_" + getImageId() + "_p" + index;
+    
+    // 以格式化文本为基础
+    let name = renameMultiName;
+
+    // 替换文本
+    name = name.replace(/\$\{authorName\}/g, getAuthorName());
+    name = name.replace(/\$\{authorId\}/g, getAuthorId());
+    name = name.replace(/\$\{imageName\}/g, getOriginImageName());
+    name = name.replace(/\$\{imageId\}/g, getImageId());
+    name = name.replace(/\$\{page\}/g, index);
 
     // 去除 windows 不能命名的字符
     name = name.replace(/\\|\/|:|\*|\?|"|<|>|\|/g, "");
