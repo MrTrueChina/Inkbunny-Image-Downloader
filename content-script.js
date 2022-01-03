@@ -62,10 +62,7 @@ function isSingleImage() {
  * 下载单张图片
  */
 function downloadSingleImage(){
-
-    getOriginImageName();
-
-    // downloadSingleImageByDocument(document,"page.jpg");
+    downloadSingleImageByDocument(document,"page.jpg");
 }
 
 /**
@@ -232,4 +229,12 @@ function getOriginImageName() {
 /**
  * 获取图片 ID
  */
-function getImageId(){}
+function getImageId() {
+    // 获取当前网页的 url
+    let url = window.location.toString();
+    
+    // 移除固定部分
+    let id = url.replace("https://inkbunny.net/s/","");
+
+    return id;
+}
