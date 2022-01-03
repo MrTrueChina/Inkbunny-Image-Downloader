@@ -9,23 +9,6 @@ addDownloadButton();
  * 添加下载按钮
  */
 function addDownloadButton() {
-    if (isMainPage()) {
-        addMainPageDownloadButton();
-    }
-}
-
-/**
- * 判断当前页面是否是 Inkbunny 主页面
- * @returns 如果当前页面是 Inkbunny 主页面则返回 true，否则返回 false
- */
-function isMainPage(){
-    return document.getElementsByTagName("img").length > 1;
-}
-
-/**
- * 添加 Inkbunny 主站的下载按钮
- */
-function addMainPageDownloadButton() {
     // 获取图片名称元素包装元素时的根元素的 id
     let getPicNameContainerElementRootId = "pictop";
     // 获取图片名称元素包装元素时从根元素开始到获取到图片名称元素包装元素所需的所有标签和索引
