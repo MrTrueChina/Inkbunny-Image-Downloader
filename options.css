@@ -20,7 +20,13 @@ input {
     justify-content: flex-end;
     margin-top: 16px;
 }
-  
+
+.submit button{
+    padding: 3px;
+    font-size: 1rem;
+    min-width: 6rem;
+}
+
 th {
     text-align: left;
 }
