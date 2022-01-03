@@ -1,0 +1,29 @@
+body {
+    font-size: 1rem;
+    max-width: 800px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+  
+.path_setting {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 10px;
+    align-items: center;
+}
+  
+input {
+    padding: 3px;
+    font-size: 1rem;
+    min-width: 100px;
+}
+  
+.submit {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+  
+th {
+    text-align: left;
+}

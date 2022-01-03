@@ -1,9 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="popup.css">
-  </head>
-  <body>
-  </body>
-  <script src="options.js"></script>
+
+<head>
+    <title>Inkbunny Image Downloader Option</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+    <h1>Inkbunny Image Downloader Option</h1>
+    <form>
+        <div class="path_setting">
+            <label for="single_image">Rename Single Image</label>
+            <input id="single_image" type="text" />
+            <label for="multi_image">Rename Multi Image</label>
+            <input id="multi_image" type="text" />
+        </div>
+        <div class="submit">
+            <input type="submit" value="Save" />
+        </div>
+    </form>
+    <dl>
+        <dt>Default (single)</dt>
+        <dd>[${authorName}] ${imageName}_Inkbunny_${imageId}</dd>
+        <br/>
+        <dt>Default (multi)</dt>
+        <dd>[${authorName}] ${imageName}_Inkbunny_${imageId}_${page}</dd>
+    </dl>
+    <br/>
+    <table>
+        <thead>
+            <tr>
+                <th>Element</th>
+                <th>Variables</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Author Name</td>
+                <td>${authorName}</td>
+            </tr>
+            <tr>
+                <td>Author ID</td>
+                <td>${authorId}</td>
+            </tr>
+            <tr>
+                <td>Image Name (Title)</td>
+                <td>${imageName}</td>
+            </tr>
+            <tr>
+                <td>Image ID</td>
+                <td>${imageId}</td>
+            </tr>
+            <tr>
+                <td>Page</td>
+                <td>${page}</td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="options.js"></script>
+</body>
+
 </html>
