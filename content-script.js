@@ -10,6 +10,14 @@ let renameSingleName;
  * 重命名多张图片的格式化字符串
  */
 let renameMultiName;
+/**
+ * 是否已经点击过下载按钮
+ */
+let downloaded = false;
+/**
+ * 下载按钮
+ */
+let downloadButton;
 
 // 添加按钮
 addDownloadButton();
@@ -35,20 +43,25 @@ function addDownloadButton() {
 
     // 创建按钮
     let td = document.createElement("td");
-    let button = document.createElement("button");
+    downloadButton = document.createElement("button");
     let text = document.createTextNode("Download");
-    button.appendChild(text);
-    td.appendChild(button);
+    downloadButton.appendChild(text);
+    td.appendChild(downloadButton);
     picNameElement.appendChild(td);
 
     // 给按钮的点击事件添加监听，调用下载按钮点击方法
-    button.addEventListener("click", downloadButtonClick, false);
+    downloadButton.addEventListener("click", downloadButtonClick, false);
 }
 
 /**
  * 下载按钮点击时执行的方法
  */
 function downloadButtonClick() {
+    // 如果已经下载了则不再起效
+    if(downloaded){
+        return;
+    }
+
     // 先读取设置再下载
     chrome.storage.sync.get(
         {
@@ -67,6 +80,11 @@ function downloadButtonClick() {
                 // 否则使用多图方式下载
                 downloadMultipleImage();
             }
+
+            // 记录已下载
+            downloaded = true;
+            // 按钮文本改为已下载
+            downloadButton.textContent = "Downloaded";
         }
     );
 }
