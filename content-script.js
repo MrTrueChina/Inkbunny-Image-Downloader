@@ -26,6 +26,11 @@ addDownloadButton();
  * 添加下载按钮
  */
 function addDownloadButton() {
+    // 如果没有 id 为 magicbox 的元素，说明这个页面不是图片的页面，可能是小说的，这不是这个插件现阶段的功能，不添加按钮
+    if(!document.getElementById("magicbox")){
+        return;
+    }
+
     // 获取图片名称元素包装元素时的根元素的 id
     let getPicNameContainerElementRootId = "pictop";
     // 获取图片名称元素包装元素时从根元素开始到获取到图片名称元素包装元素所需的所有标签和索引
