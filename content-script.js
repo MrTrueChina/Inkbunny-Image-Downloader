@@ -129,8 +129,14 @@ function downloadSingleImageByDocument(inkbunnyDoc, fileName) {
     let aList = imageAndDownloadDiv.getElementsByTagName("a");
     let downloadA = aList[aList.length - 1];
 
+    // 获取下载链接，如果是原图太小则不会有下载原图按钮，下载图片 a 标签就会获取错误，此时需要确认下载链接是不是图片服务器，不是的话以显示的图片为准
+    let url = downloadA.href;
+    if(url.indexOf("nl.ib.metapix.net/file/") == -1){
+        url = imageElement.src;
+    }
+
     // 向 background 发出下载图片消息，downloads 在注入内容里不能使用，需要向 background 发消息让 background 使用
-    chrome.runtime.sendMessage({ type: "downloadImage", fileName: fileName, url: downloadA.href });
+    chrome.runtime.sendMessage({ type: "downloadImage", fileName: fileName, url: url });
 }
 
 /**
@@ -327,6 +333,9 @@ function getImageId() {
     // 对于多P图，Inkbunny 的网址后缀了分P等信息，需要删掉
     if (id.indexOf("-") != -1) {
         id = id.substring(0, id.indexOf("-"));
+    }
+    if (id.indexOf("#") != -1) {
+        id = id.substring(0, id.indexOf("#"));
     }
 
     return id;
