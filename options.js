@@ -10,11 +10,13 @@ document.getElementById('save').addEventListener('click', saveOptions);
 function saveOptions() {
     // 读取两个输入框的值
     let renameSingleName = document.getElementById("renameSingleImageInput").value;
+    let multiImageFolderName = document.getElementById("multiImageFolderNameInput").value;
     let renameMultiName = document.getElementById("renameMultiImageInput").value;
     // 保存，保存分两个参数，前一个是保存设置的 KV 对象，后一个是保存成功的回调
     chrome.storage.sync.set(
         {
             renameSingleName: renameSingleName,
+            multiImageFolderName: multiImageFolderName,
             renameMultiName: renameMultiName
         },
         () => { alert("Saved") }
@@ -28,10 +30,12 @@ function restoreOptions() {
     chrome.storage.sync.get(
         {
             renameSingleName: "[${authorName}] ${imageName}_Inkbunny_${imageId}",
+            multiImageFolderName: "[${authorName}] ${imageName}_Inkbunny_${imageId}",
             renameMultiName: "[${authorName}] ${imageName}_Inkbunny_${imageId}_${page}"
         },
         (items) => {
             document.getElementById('renameSingleImageInput').value = items.renameSingleName;
+            document.getElementById('multiImageFolderNameInput').value = items.renameSingleName;
             document.getElementById('renameMultiImageInput').value = items.renameMultiName;
         }
     );

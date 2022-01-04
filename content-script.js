@@ -7,6 +7,10 @@
  */
 let renameSingleName;
 /**
+ * 多图下载文件夹名字的格式化字符串
+ */
+let multiImageFolderName;
+/**
  * 重命名多张图片的格式化字符串
  */
 let renameMultiName;
@@ -71,11 +75,13 @@ function downloadButtonClick() {
     chrome.storage.sync.get(
         {
             renameSingleName: "[${authorName}] ${imageName}_Inkbunny_${imageId}",
+            multiImageFolderName: "[${authorName}] ${imageName}_Inkbunny_${imageId}",
             renameMultiName: "[${authorName}] ${imageName}_Inkbunny_${imageId}_${page}"
         },
         (items) => {
             // 将读取到的格式化字符串保存到本地
             renameSingleName = items.renameSingleName;
+            multiImageFolderName = items.multiImageFolderName;
             renameMultiName = items.renameMultiName;
             
             if (isSingleImage()) {
@@ -109,7 +115,7 @@ function isSingleImage() {
 function downloadSingleImage() {
     // 获取下载后的名称
     let fileName = getSingleImageName();
-    
+
     // 单张下载
     downloadSingleImageByDocument(document, fileName);
 }
@@ -148,12 +154,15 @@ function downloadMultipleImage(){
     // 获取 包括每个图片的div
     let pageDivList = listContentElement.getElementsByClassName("widget_imageFromSubmission");
 
+    // 获取下载到的文件夹的名字
+    let folderName = getMultipleImageFolderName();
+
     // 遍历每个图
     for(let pageIndex = 0;pageIndex < pageDivList.length;pageIndex++){
         // 获取到这个图的 a 标签
         let pageA = pageDivList[pageIndex].getElementsByTagName("a")[0];
         // 通过标签里的链接下载图片
-        downloadImageByHttpGet(pageIndex, pageA.href);
+        downloadImageByHttpGet(pageIndex, pageA.href, folderName);
     }
 }
 
@@ -161,8 +170,9 @@ function downloadMultipleImage(){
  * 通过 HTTP GET 请求下载图片
  * @param {int} pageIndex 这张图片在图集中的索引
  * @param {string} url HTTP GET 请求的链接
+ * @param {string} folderName 下载到的文件夹的名字
  */
-function downloadImageByHttpGet(pageIndex, url){
+function downloadImageByHttpGet(pageIndex, url, folderName){
     // 准备发送 HTTP 请求的对象
     let httpRequest = new XMLHttpRequest();
     
@@ -181,6 +191,11 @@ function downloadImageByHttpGet(pageIndex, url){
             // 获取下载后的文件名
             let fileName = getMultipleImageName(pageIndex);
 
+            // 拼接文件名用来下载到指定文件夹里
+            if(folderName && folderName.length > 0){
+                fileName = folderName + "/" + fileName;
+            }
+
             // 下载这个网页的主图
              downloadSingleImageByDocument(doc,fileName);
         }
@@ -193,10 +208,27 @@ function downloadImageByHttpGet(pageIndex, url){
 /**
  * 获取单张图片下载后的名字
  */
-function getSingleImageName(){
-    
+function getSingleImageName() {
+
     // 以格式化文本为基础
     let name = renameSingleName;
+
+    // 替换文本
+    name = name.replace(/\$\{authorName\}/g, getAuthorName());
+    name = name.replace(/\$\{authorId\}/g, getAuthorId());
+    name = name.replace(/\$\{imageName\}/g, getOriginImageName());
+    name = name.replace(/\$\{imageId\}/g, getImageId());
+
+    // 去除 windows 不能命名的字符
+    name = name.replace(/\\|\/|:|\*|\?|"|<|>|\|/g, "");
+
+    return name;
+}
+
+function getMultipleImageFolderName(){
+
+    // 以格式化文本为基础
+    let name = multiImageFolderName;
 
     // 替换文本
     name = name.replace(/\$\{authorName\}/g, getAuthorName());
@@ -214,8 +246,8 @@ function getSingleImageName(){
  * 获取多P图集中单张图片下载后的名字
  * @param {int} index 这张图片在多P图集中的索引
  */
-function getMultipleImageName(index){
-    
+function getMultipleImageName(index) {
+
     // 以格式化文本为基础
     let name = renameMultiName;
 

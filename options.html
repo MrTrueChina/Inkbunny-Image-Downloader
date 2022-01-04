@@ -12,6 +12,8 @@
         <div class="renameTextField">
             <label>Rename Single Image</label>
             <input id="renameSingleImageInput" type="text" />
+            <label>Multi Image Folder Name</label>
+            <input id="multiImageFolderNameInput" type="text" />
             <label>Rename Multi Image</label>
             <input id="renameMultiImageInput" type="text" />
         </div>
@@ -20,10 +22,15 @@
         </div>
     </form>
     <dl>
-        <dt>Default (single)</dt>
+        <dt><b>Default</b></dt>
+        <br/>
+        <dt>Rename Single Image</dt>
         <dd>[${authorName}] ${imageName}_Inkbunny_${imageId}</dd>
         <br/>
-        <dt>Default (multi)</dt>
+        <dt>Multi Image Folder Name</dt>
+        <dd>[${authorName}] ${imageName}_Inkbunny_${imageId}</dd>
+        <br/>
+        <dt>Rename Multi Image</dt>
         <dd>[${authorName}] ${imageName}_Inkbunny_${imageId}_${page}</dd>
     </dl>
     <br/>
@@ -52,7 +59,7 @@
                 <td>${imageId}</td>
             </tr>
             <tr>
-                <td>Page</td>
+                <td>Page (Only Multi)</td>
                 <td>${page}</td>
             </tr>
         </tbody>
